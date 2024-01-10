@@ -1,0 +1,61 @@
+<!DOCTYPE html> 
+<html> 
+
+<head> 
+	<title>Messenger Application</title> 
+	<script src="https://cdn.tailwindcss.com"></script> 
+</head> 
+
+<body> 
+    <header class="flex items-center justify-center p-10 m-0 justify-between">
+        <h1 class="font-bold text-blue-500 
+                text-3xl text-left"> 
+            Messenger Application 
+        </h1> 
+        <div>
+            <h2 class="font-bold text-blue-300 
+                text-1xl">
+                Welcome, {displayName}!
+            </h2>
+            <a class="text-xs" href="/logout">
+                Log Out
+            </a>
+        </div>
+    </header>
+    <div>
+        <ul class="border p-10 m-10" id="messages"></ul>
+        <form class="flex m-10" id="form" action="">
+            <input class="border" type="text" id="input" autocomplete="off"/>
+            <button class="font-bold ml-10">Send</button>
+        </form>
+    </div>
+</body> 
+<script src="/socket.io/socket.io.js"></script>
+<script> 
+	const socket = io();
+
+    var form = document.getElementById('form');
+    var input = document.getElementById('input');
+    var messages = document.getElementById('messages');
+
+    form.addEventListener('submit', function(e) {
+        // prevent default form submission behaviour (Submitting blank)
+        e.preventDefault();
+        if (input.value) {
+            socket.emit('chat message', input.value);
+            input.value = '';
+        }
+    });
+
+
+    socket.on('chat message', function(data) {
+        // create list element
+        var item = document.createElement('li');
+        item.textContent = `${data.userName}: ${data.message}`;
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+    });
+</script> 
+
+</html>
+
