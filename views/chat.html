@@ -4,6 +4,7 @@
 <head> 
 	<title>Messenger Application</title> 
 	<script src="https://cdn.tailwindcss.com"></script> 
+    <link rel="stylesheet" type="text/css" href="../pubilc/styles.css">
 </head> 
 
 <body> 
@@ -47,11 +48,52 @@
         }
     });
 
-
     socket.on('chat message', function(data) {
+    // create list element
+    var item = document.createElement('li');
+    item.textContent = `${getInitials(data.user)}: ${data.message}`; // Replace data.user with initials
+
+    // create element for user initials in a circle
+    var initials = document.createElement('div');
+    initials.textContent = getInitials(data.user); // assuming you have a function to get initials
+    initials.classList.add('initials-circle'); // add a class for styling
+
+    // append list item to messages
+    messages.appendChild(item);
+
+    window.scrollTo(0, document.body.scrollHeight);
+    });
+
+    // Function to get initials from a name
+    function getInitials(name) {
+        return name.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
+    }
+  
+
+
+
+    // socket.on('chat message', function(data) {
+    //     // create list element
+    //     var item = document.createElement('li');
+    //     item.textContent = `${data.user}: ${data.message}`;
+    //     messages.appendChild(item);
+    //     window.scrollTo(0, document.body.scrollHeight);
+    // });
+
+    socket.on('user connected', function(data) {
         // create list element
         var item = document.createElement('li');
-        item.textContent = `${data.userName}: ${data.message}`;
+        item.textContent = `${data.user} joined the chat!`;
+        item.style.color = 'blue';
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+    });
+
+    socket.on('user disconnected', function(data) {
+        // create list element
+        var item = document.createElement('li');
+        item.textContent = `${data.user} left the chat!`;
+        item.style.color = 'red';
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
     });

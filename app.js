@@ -8,6 +8,10 @@ const port = process.env.PORT || 3000;
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
+const path = require('path');
+
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname + '/public')));
 
 // Set up session
 app.use(session({
@@ -83,15 +87,15 @@ app.get('/logout', function(req, res, next) {
 });
 
 io.on('connection', (socket) => {
-  const currentUser = socket.request.user;
-  console.log('a user connected' + currentUser);
+  const currentUser = displayName;
+  console.log(`User connected ${displayName}`);
+  io.emit('user connected', { user: `${displayName}` });
   socket.on('disconnect', () => {
-    console.log('user disconnected')
+    console.log(`User disconnected ${displayName}`)
+    io.emit('user disconnected', { user: `${displayName}` });
   })
-
-
   socket.on('chat message', (msg) => {
-    io.emit('chat message', { user: currentUser, message: msg });
+    io.emit('chat message', { user: `${displayName}`, message: msg });
   });
 });
 
