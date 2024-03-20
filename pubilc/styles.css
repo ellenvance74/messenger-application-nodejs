@@ -1,0 +1,13 @@
+/* styles.css */
+
+.initials-circle {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    background-color: pink; /* or any other color you want for the circle */
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 30px;
+    margin-right: 10px; /* adjust as needed for spacing */
+}
